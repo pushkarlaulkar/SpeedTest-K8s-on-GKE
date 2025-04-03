@@ -1,0 +1,38 @@
+---
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: speedtest-cert
+  namespace: speedtest
+spec:
+  domains:
+    - {{ .Values.domain_name }}
+
+---
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: speedtest-security-config
+  namespace: speedtest
+spec:
+  redirectToHttps:
+    enabled: true
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: speedtest-ingress
+  namespace: speedtest
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    networking.gke.io/managed-certificates: "speedtest-cert"
+    networking.gke.io/v1beta1.FrontendConfig: "speedtest-security-config"
+    acme.cert-manager.io/http01-edit-in-place: "true"
+spec:
+  ingressClassName: gce
+  defaultBackend:
+    service:
+      name: speedtest
+      port:
+        number: 8082

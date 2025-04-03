@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: speedtest
+  namespace: speedtest
+  labels:
+    app: speedtest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: speedtest
+  template:
+    metadata:
+      labels:
+        app: speedtest
+    spec:
+      containers:
+      - name: speedtest
+        image: ghcr.io/librespeed/speedtest:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8082
+        env:
+        - name: MODE
+          value: "standalone"
+        - name: TITLE
+          value: "SpeedTest"
+        - name: TELEMETRY
+          value: "false"
+        - name: ENABLE_ID_OBFUSCATION
+          value: "true"
+        - name: DISABLE_IPINFO
+          value: "true"
+        - name: WEBPORT
+          value: "8082"

@@ -1,0 +1,5 @@
+We will map the custom domain on Route 53 to the ALB created after ingress creation.
+
+Get the ALB dns by running below command
+
+kubectl -n your_namespace get ingress speedtest-ingress
