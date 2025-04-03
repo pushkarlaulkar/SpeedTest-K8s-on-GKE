@@ -38,14 +38,15 @@ To install this app using ArgoCD, perform below steps
      ```
      kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
      ```
-  3. Create a certificate for the preferred ArgoCD domain name in ACM and put the arn of the certificate in ` argocd-ingress.yml ` & run
+  3. Deploy **ArgoCD Ingress**, **ArgoCD Managed Certificate** & **ArgoCD Frontend Config** which will create an ALB listening on port 443 by running below command. Before running below command, in the **ArgoCD Managed Certificate** put the domain name you need for your ArgoCD application.
 
      ```
      kubectl -n argocd apply -f argocd-ingress.yml
      ```
-  4. Run ` kubectl -n argocd get ingress ` to retrieve the ALB DNS. Point the domain name in Route 53 to the ALB as an A (alias) record.
-  5. Access ArgoCD using ` https://argocd_domain_name `.
-  6. To get the initial admin user password run the command
+  4. Run ` kubectl -n argocd get ingress ` to retrieve the ALB IP ( Please wait couple of minutes ). Create an A record in **Cloud DNS** or your own DNS service pointing your ArgoCD domain name to this IP.
+  5. Once the DNS entry has been added it will take couple of minutes ( can be 60 minutes in some cases ) for the certificate to be generated. Run ` kubectl -n argocd get managedcertificate ` or in GCP console to check for **Active** status.
+  6. Access ArgoCD using ` https://argocd_domain_name `.
+  7. To get the initial admin user password run the command
 
      ```
      kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode
