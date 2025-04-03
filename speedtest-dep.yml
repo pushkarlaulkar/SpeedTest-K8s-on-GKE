@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: speedtest
-        image: ghcr.io/librespeed/speedtest:latest
+        image: plaulkar/librespeed:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8082
