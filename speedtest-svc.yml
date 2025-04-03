@@ -5,8 +5,8 @@ metadata:
   namespace: speedtest
   labels:
     app: speedtest
-    annotations:
-      cloud.google.com/neg: '{"ingress": true}'
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
 spec:
   type: ClusterIP
   selector:
