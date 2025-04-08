@@ -51,7 +51,7 @@ To install this app using ArgoCD, perform below steps
      kubectl -n argocd scale deploy argocd-server --replicas=0
      kubectl -n argocd scale deploy argocd-server --replicas=1
      ```
-  4. Deploy **ArgoCD Ingress**, **ArgoCD Managed Certificate** & **ArgoCD Frontend Config** which will create an ALB listening on port 443 by running below command. Before running below command, in the **ArgoCD Managed Certificate** put the domain name you need for your ArgoCD application.
+  4. Deploy **ArgoCD Ingress**, **Managed Certificate**, **Frontend Config** & **Backend Config** which will create an ALB listening on port 443 by running below command. Before running below command, in the **ArgoCD Managed Certificate** put the domain name you need for your ArgoCD application.
 
      ```
      kubectl -n argocd apply -f argocd-ingress.yml
