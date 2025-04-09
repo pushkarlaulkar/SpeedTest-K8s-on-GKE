@@ -44,7 +44,7 @@ To install this app using ArgoCD, perform below steps
      ```
      kubectl patch service argocd-server -n argocd -p '{"metadata": {"annotations": {"cloud.google.com/backend-config": "{\"ports\": {\"http\": \"argocd-backend-config\"}}"}}}'
      ```
-  4. Path the ConfigMap **argocd-cmd-params-cm** to add `server.insecure : true`, then scale the deployment to 0 & then 1
+  4. Patch the ConfigMap **argocd-cmd-params-cm** to add `server.insecure : true`, then scale the deployment to 0 & then 1
 
      ```
      kubectl -n argocd patch configmap argocd-cmd-params-cm --type merge -p '{"data":{"server.insecure":"true"}}'
