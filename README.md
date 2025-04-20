@@ -64,3 +64,38 @@ To install this app using ArgoCD, perform below steps
      ```
      kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode && echo
      ```
+
+-----------------------------
+
+**Prometheus** & **Grafana** monitoring. **NAT Gateway** is required to download container images.
+
+To install the Prometheus stack, perform below steps
+   1. Apply the monitoring stack manifest. Set a password for grafana admin user
+
+      ```
+      helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+      helm repo update
+      helm install kube-prometheus prometheus-community/kube-prometheus-stack --create-namespace --namespace monitoring --set grafana.adminPassword='any_secure_password' --set grafana.service.type=ClusterIP
+      ```
+
+      ✅ This installs :- Prometheus, Grafana, Node Exporter, kube-state-metrics, Alertmanager
+   
+   2. Patch the Grafana service to add the below annotation
+
+      ```
+      kubectl patch service kube-prometheus-grafana -n monitoring -p '{"metadata":{"annotations":{"cloud.google.com/neg":"{\"ingress\": true}"}}}'
+      ```
+
+   3. Deploy **Monitoring Ingress**, **Managed Certificate**, **Frontend Config** which will create an ALB listening on port 443 by running below command. Before running below command, in the **Monitoring Managed Certificate** put the domain name you need for your Grafana application.
+
+      ```
+      kubectl -n monitoring apply -f monitoring-ingress.yml
+      ```
+   4. Run ` kubectl -n monitoring get ingress ` to retrieve the ALB IP ( Please wait couple of minutes ). Create an A record in **Cloud DNS** or your own DNS service pointing your Grafana domain name to this IP.
+   5. Once the DNS entry has been added it will take couple of minutes ( can be 60 minutes in some cases ) for the certificate to be generated. Run ` kubectl -n monitoring get managedcertificate ` or in GCP console to check for **Active** status.
+   6. Access Grafana using ` https://grafana_domain_name `.
+   7. To get the initial admin user password run the command
+
+      ```
+      kubectl -n monitoring get secrets kube-prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
+      ```
